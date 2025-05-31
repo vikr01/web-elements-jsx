@@ -1,0 +1,44 @@
+{
+  "name": "html-tag-mappings",
+  "version": "0.0.0-alpha.0",
+  "main": "lib/index.js",
+  "type": "module",
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://github.com/vikr01/"
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "test": "vitest",
+    "typecheck": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikr01/html-tag-mappings.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vikr01/html-tag-mappings/issues"
+  },
+  "homepage": "https://github.com/vikr01/html-tag-mappings#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@tsconfig/node-lts": "^22.0.1",
+    "@vikr01/eslint-config": "^1.0.0-alpha.4",
+    "@vikr01/workspaces-helpers": "^0.0.0-alpha.1",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  },
+  "dependencies": {
+    "html-tags": "^5.0.0"
+  }
+}
