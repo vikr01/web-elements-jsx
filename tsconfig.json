@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node-lts/tsconfig.json",
+  "extends": ["@tsconfig/node-lts/tsconfig.json", "./tsconfig/recommended.json"],
   "compilerOptions": {
     "noEmit": true,
 
@@ -8,6 +8,10 @@
     "moduleResolution": "bundler",
 
     "lib": ["DOM", "ES2024"],
+
+    "paths": {
+      "web-elements-jsx/lib/*": ["./src/*"]
+    },
   },
   "exclude": ["./lib"]
 }
