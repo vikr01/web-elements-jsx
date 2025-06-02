@@ -4,14 +4,31 @@
  * https://babeljs.io/docs/babel-plugin-transform-react-jsx#importsource
  **/
 
-import type { HtmlTags } from "html-tags";
+type CustomTagElementNameMapSuperType = {[key: string]: Element};
 
-type CustomTagElementNameSuperType = {[key: string]: Element};
+type TagClassMapMerged<TStrToClass extends CustomTagElementNameMapSuperType> = Omit<HTMLElementTagNameMap, keyof TStrToClass> & TStrToClass;
+type Tag<T extends CustomTagElementNameMapSuperType> = keyof TagClassMapMerged<T>;
 
-type TagClassMapMerged<TStrToClass extends CustomTagElementNameSuperType> = Omit<HTMLElementTagNameMap, keyof TStrToClass> & TStrToClass;
-type Tag<T extends CustomTagElementNameSuperType> = keyof TagClassMapMerged<T>;
+const Fragment: unique symbol = Symbol('fragment');
 
-export function jsx<T extends CustomTagElementNameSuperType, TTag extends Tag<T>>(tag: TTag, props: Readonly<Record<string, string>>): TagClassMapMerged<T>[TTag] {
+export type JsxFn<TCustomTagElementNameMap extends CustomTagElementNameMapSuperType> = {
+	<TFrag extends DocumentFragment = DocumentFragment>(tag: typeof Fragment | TFrag, props: Readonly<{children?: undefined | null | string | Element}> | undefined | never): TFrag;
+	<TTag extends Tag<TCustomTagElementNameMap>>(tag: TTag, props: Readonly<Record<string, string>>): TagClassMapMerged<TCustomTagElementNameMap>[TTag]
+};
+
+export function jsx<
+		T extends CustomTagElementNameMapSuperType,
+		TTag extends Tag<T>
+	>(tag: TTag | typeof Fragment, props: Readonly<Record<string, string>>): TagClassMapMerged<T>[TTag] | DocumentFragment {
+		if (tag === Fragment) {
+			const fragmentContainer = document.createDocumentFragment();
+			const children = props?.children ?? null;
+			if (children !== null) {
+
+			}
+			return fragmentContainer;
+		}
+
 	const element = document.createElement((tag as any)) as TagClassMapMerged<T>[typeof tag];
 
 	for (const key in props) {
@@ -28,20 +45,27 @@ export function jsx<T extends CustomTagElementNameSuperType, TTag extends Tag<T>
 	return element;
 }
 
-export type IntrinsicElements<T extends CustomTagElementNameSuperType> = {
-	[K in Tag<T>]: any;
-};
-
-type El = Element;
-export type { El as Element };
-
 export default function build<
-	T extends CustomTagElementNameSuperType,
-	>() {
-	const _jsx = jsx as <TTag extends Tag<T>>(...args: Parameters<typeof jsx<T, TTag>>)=>ReturnType<typeof jsx<T, TTag>>;
+	T extends CustomTagElementNameMapSuperType,
+	>(): Readonly<{
+		jsx: JsxFn<T>,
+		jsxs: JsxFn<T>,
+		jsxDEV: JsxFn<T>,
+		Fragment: typeof Fragment,
+	}> {
+	const _jsx = jsx as JsxFn<T>;
+
 	return {
 		jsx: _jsx,
 		jsxs: _jsx,
 		jsxDEV: _jsx,
+		Fragment,
 	};
 }
+
+export type IntrinsicElements<T extends CustomTagElementNameMapSuperType> = {
+	[K in Tag<T>]: any;
+};
+
+type El = Element | DocumentFragment;
+export type { El as Element };

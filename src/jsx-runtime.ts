@@ -5,17 +5,16 @@ import jsxRuntimeBuilder, {
 
 type TagToElementMap = Record<never, never>;
 
-const {jsx, jsxs, jsxDEV} = jsxRuntimeBuilder<TagToElementMap>();
+const {jsx, jsxs, jsxDEV, Fragment} = jsxRuntimeBuilder<TagToElementMap>();
 
 export {
   jsx,
   jsxs,
   jsxDEV,
+  Fragment,
 };
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements extends _IntrinsicElements<TagToElementMap> {}
-    interface Element extends _Element {}
-  }
+export namespace JSX {
+  export type IntrinsicElements = _IntrinsicElements<TagToElementMap>;
+  export type Element = _Element;
 }
