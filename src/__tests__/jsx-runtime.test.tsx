@@ -9,7 +9,6 @@ describe("jsx-runtime", () => {
 
 	test("can handle document fragments", () => {
 		expect(<></>).toBeInstanceOf(DocumentFragment);
-		// @ts-expect-error Typescript expects Fragment to be a class not a symbol, even though it passes.
 		expect(<Fragment></Fragment>).toBeInstanceOf(DocumentFragment);
 	});
 });
