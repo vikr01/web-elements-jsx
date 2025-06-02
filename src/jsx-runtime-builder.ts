@@ -11,13 +11,13 @@ type TagClassMapMerged<TStrToClass extends CustomTagElementNameMapSuperType> =
 type Tag<T extends CustomTagElementNameMapSuperType> =
   keyof TagClassMapMerged<T>;
 
-const fragmentSymbol: unique symbol = Symbol("fragment");
+const FRAGMENT: { new (): DocumentFragment } = DocumentFragment;
 
 type FragmentProps<T extends DocumentFragment> = Readonly<{
   children?: undefined | null | Parameters<T["append"]>;
 }>;
 type AllowedFragmentTypes<T extends DocumentFragment> =
-  | typeof fragmentSymbol
+  | typeof FRAGMENT
   | { new (): T };
 
 export type JsxFn<
@@ -38,13 +38,13 @@ function jsxFragment<TFrag extends DocumentFragment = DocumentFragment>(
   props: FragmentProps<TFrag>,
 ): TFrag {
   let fragmentContainer: TFrag;
-  if (tag === fragmentSymbol) {
+  if (tag === FRAGMENT) {
     fragmentContainer = document.createDocumentFragment() as TFrag;
   } else if (
     tag === DocumentFragment ||
     (typeof tag === "function" && tag.prototype instanceof DocumentFragment)
   ) {
-    fragmentContainer = new tag();
+    fragmentContainer = new tag() as TFrag;
   } else {
     throw new Error(`Invalid JSX fragment received: ${tag?.name ?? tag}`);
   }
@@ -65,7 +65,7 @@ export function jsx<
   props: Readonly<Record<string, string>>,
 ): TagClassMapMerged<T>[TTag] | TFrag {
   if (
-    tag === fragmentSymbol ||
+    tag === FRAGMENT ||
     tag === DocumentFragment ||
     (typeof tag === "function" && tag.prototype instanceof DocumentFragment)
   ) {
@@ -95,18 +95,13 @@ export function jsx<
   return element;
 }
 
-type ForcedFragmentTypeByTypescript = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  new (...args: any[]): DocumentFragment;
-};
-
 export default function build<
   T extends CustomTagElementNameMapSuperType,
 >(): Readonly<{
   jsx: JsxFn<T>;
   jsxs: JsxFn<T>;
   jsxDEV: JsxFn<T>;
-  Fragment: ForcedFragmentTypeByTypescript;
+  Fragment: typeof FRAGMENT;
 }> {
   const _jsx = jsx as JsxFn<T>;
 
@@ -114,7 +109,7 @@ export default function build<
     jsx: _jsx,
     jsxs: _jsx,
     jsxDEV: _jsx,
-    Fragment: fragmentSymbol as unknown as ForcedFragmentTypeByTypescript,
+    Fragment: FRAGMENT,
   };
 }
 
