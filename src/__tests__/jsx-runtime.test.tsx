@@ -7,7 +7,7 @@ describe("jsx-runtime", () => {
     expect(<a />).toBeInstanceOf(HTMLAnchorElement);
   });
 
-  it("can handle document fragments", () => {
+  it("can handle fragments", () => {
     expect(<></>).toBeInstanceOf(DocumentFragment);
     expect(<Fragment></Fragment>).toBeInstanceOf(DocumentFragment);
   });
@@ -18,6 +18,13 @@ describe("jsx-runtime", () => {
     expect(
       <MyCustomDocumentFragment></MyCustomDocumentFragment>,
     ).toBeInstanceOf(MyCustomDocumentFragment);
+
+    const inner = <div />;
+    const withChildren = (
+      <MyCustomDocumentFragment>{inner}</MyCustomDocumentFragment>
+    );
+
+    expect(withChildren.children[0]).toBe(inner);
   });
 
   it("can handle the true document fragment class", () => {
@@ -27,6 +34,10 @@ describe("jsx-runtime", () => {
 
     const DocFrag = DocumentFragment;
 
-    expect(<DocFrag></DocFrag>).toBeInstanceOf(DocumentFragment);
+    const elementInner = <span />;
+    const fragmentRoot = <DocFrag>{elementInner} </DocFrag>;
+
+    expect(fragmentRoot).toBeInstanceOf(DocumentFragment);
+    expect(fragmentRoot.children[0]).toBe(elementInner);
   });
 });

@@ -14,7 +14,11 @@ type Tag<T extends CustomTagElementNameMapSuperType> =
 const FRAGMENT: { new (): DocumentFragment } = DocumentFragment;
 
 type FragmentProps<T extends DocumentFragment> = Readonly<{
-  children?: undefined | null | Parameters<T["append"]>;
+  children?:
+    | undefined
+    | null
+    | Parameters<T["append"]>
+    | Parameters<T["append"]>[0];
 }>;
 type AllowedFragmentTypes<T extends DocumentFragment> =
   | typeof FRAGMENT
@@ -49,8 +53,14 @@ function jsxFragment<TFrag extends DocumentFragment = DocumentFragment>(
     throw new Error(`Invalid JSX fragment received: ${tag?.name ?? tag}`);
   }
 
-  if (props?.children != null) {
-    fragmentContainer.append.call(props.children);
+  const children = props?.children;
+
+  if (children != null) {
+    if (Array.isArray(children)) {
+      fragmentContainer.append(...children);
+    } else {
+      fragmentContainer.append(children);
+    }
   }
 
   return fragmentContainer;
