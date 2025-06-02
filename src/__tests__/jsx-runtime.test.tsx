@@ -19,4 +19,14 @@ describe("jsx-runtime", () => {
       <MyCustomDocumentFragment></MyCustomDocumentFragment>,
     ).toBeInstanceOf(MyCustomDocumentFragment);
   });
+
+  it("can handle the true document fragment class", () => {
+    expect(<DocumentFragment></DocumentFragment>).toBeInstanceOf(
+      DocumentFragment,
+    );
+
+    const DocFrag = DocumentFragment;
+
+    expect(<DocFrag></DocFrag>).toBeInstanceOf(DocumentFragment);
+  });
 });

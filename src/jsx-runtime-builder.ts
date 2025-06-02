@@ -41,8 +41,8 @@ function jsxFragment<TFrag extends DocumentFragment = DocumentFragment>(
   if (tag === fragmentSymbol) {
     fragmentContainer = document.createDocumentFragment() as TFrag;
   } else if (
-    typeof tag === "function" &&
-    tag.prototype instanceof DocumentFragment
+    tag === DocumentFragment ||
+    (typeof tag === "function" && tag.prototype instanceof DocumentFragment)
   ) {
     fragmentContainer = new tag();
   } else {
@@ -66,6 +66,7 @@ export function jsx<
 ): TagClassMapMerged<T>[TTag] | TFrag {
   if (
     tag === fragmentSymbol ||
+    tag === DocumentFragment ||
     (typeof tag === "function" && tag.prototype instanceof DocumentFragment)
   ) {
     return jsxFragment<TFrag>(tag as AllowedFragmentTypes<TFrag>, props);
