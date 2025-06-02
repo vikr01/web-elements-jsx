@@ -17,4 +17,3 @@ export default defineConfig({
   skipNodeModulesBundle: true,
   splitting: false,
 });
-
