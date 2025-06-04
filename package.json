@@ -16,7 +16,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "html-tags": "^5.0.0"
+    "type-fest": "^4.41.0"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^22.0.1",
