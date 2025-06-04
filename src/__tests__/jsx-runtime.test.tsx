@@ -24,7 +24,13 @@ describe("jsx-runtime", () => {
       <MyCustomDocumentFragment>{inner}</MyCustomDocumentFragment>
     );
 
-    expect(withChildren.children[0]).toBe(inner);
+    expect(Array.from(withChildren.children)).toStrictEqual([inner]);
+
+    const containerWithNestedFragment = <div>{withChildren}</div>;
+
+    expect(Array.from(containerWithNestedFragment.children)).toStrictEqual([
+      inner,
+    ]);
   });
 
   it("can handle the true document fragment class", () => {
@@ -35,9 +41,15 @@ describe("jsx-runtime", () => {
     const DocFrag = DocumentFragment;
 
     const elementInner = <span />;
-    const fragmentRoot = <DocFrag>{elementInner} </DocFrag>;
+    const fragmentRoot = <DocFrag>{elementInner}</DocFrag>;
 
     expect(fragmentRoot).toBeInstanceOf(DocumentFragment);
-    expect(fragmentRoot.children[0]).toBe(elementInner);
+    expect(Array.from(fragmentRoot.children)).toBe([elementInner]);
+  });
+
+  it("can handle attributes", () => {
+    const element = (<div class="foo" />) as HTMLDivElement;
+
+    expect(element.getAttribute("class")).toBe("foo");
   });
 });
